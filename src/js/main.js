@@ -154,6 +154,7 @@ function createWeight(clickX){
 
     setTimeout(() => {
         rotateSeesaw();
+        saveState();
     }, 350);
     
 }
@@ -187,6 +188,7 @@ function resetSimulation(){
     document.getElementById('angle').textContent = '0°';
 
     logPanel.innerHTML = '';
+    localStorage.removeItem('seesaw');
 
     updateNextWeight();
 
@@ -194,4 +196,71 @@ function resetSimulation(){
 
 resetButton.addEventListener('click', resetSimulation);
 
+
+
+
+
+
+
+function saveState() {
+    const state = {
+        leftTorque: totalTorqueLeft,
+        rightTorque: totalTorqueRight,
+        leftWeight: totalWeightLeft,
+        rightWeight: totalWeightRight,
+        weights: [],
+        logs: []
+    };
+    
+    seesaw.querySelectorAll('.weight').forEach(w => {
+        state.weights.push({
+            text: w.textContent,
+            left: w.style.left,
+            color: w.style.background
+        });
+    });
+    
+    logPanel.querySelectorAll('.logs').forEach(log => {
+        state.logs.push(log.textContent);
+    });
+    
+    localStorage.setItem('seesaw', JSON.stringify(state));
+}
+
+function loadState() {
+    const data = localStorage.getItem('seesaw');
+    if (!data) return;
+    
+    const state = JSON.parse(data);
+    
+    totalTorqueLeft = state.leftTorque;
+    totalTorqueRight = state.rightTorque;
+    totalWeightLeft = state.leftWeight;
+    totalWeightRight = state.rightWeight;
+    
+    document.getElementById('leftVal').textContent = totalWeightLeft.toFixed(1) + ' kg';
+    document.getElementById('rightVal').textContent = totalWeightRight.toFixed(1) + ' kg';
+    
+    state.weights.forEach(w => {
+        const weight = document.createElement('div');
+        weight.className = 'weight';
+        weight.textContent = w.text;
+        weight.style.left = w.left;
+        weight.style.top = '10px';
+        weight.style.background = w.color;
+        seesaw.appendChild(weight);
+    });
+    
+    state.logs.forEach(txt => {
+        const log = document.createElement('div');
+        log.className = 'logs';
+        log.textContent = txt;
+        logPanel.appendChild(log);
+    });
+    
+    rotateSeesaw();
+}
+
+
+loadState();
 updateNextWeight();
