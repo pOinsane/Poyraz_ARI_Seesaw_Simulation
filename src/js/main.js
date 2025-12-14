@@ -11,6 +11,8 @@ let totalTorqueRight = 0;
 let totalWeightLeft = 0;
 let totalWeightRight = 0;
 
+let previewWeight = null;
+
 //Simulation Container toplamda 700 pixel, seesaw ise 400 pixel
 //Simulation Containerın merkezi, seesaw'un da merkezi olduğu için tam olarak 350 pixel sağa gidildiğinde seesaw'un merkezine gelmiş oluruz
 //Seesaw da ağırlık merkezinin sağına ve soluna 200er pixel olarak bölündüğü için
@@ -32,10 +34,35 @@ simContainer.addEventListener('mousemove', function(event){
     if(mouseX >= clickableAreaLeftBound && mouseX <= clickableAreaRightBound)
     {
         simContainer.style.cursor = 'pointer';
+
+        if(!previewWeight) {
+            previewWeight = document.createElement('div');
+            previewWeight.className = 'preview_weight';
+            previewWeight.textContent = nextWeight + 'kg';
+            seesaw.appendChild(previewWeight);
+        }
+        
+        const distanceFromCenter = mouseX - center;
+        previewWeight.textContent = nextWeight + 'kg';
+        previewWeight.style.left = (200 + distanceFromCenter) + 'px';
+        previewWeight.style.top = '10px';
+        previewWeight.style.display = 'flex';
+
+
     } else {
         simContainer.style.cursor = 'default';
+
+         if(previewWeight) {
+            previewWeight.style.display = 'none';
+        }
     }
 
+});
+
+simContainer.addEventListener('mouseleave', function() {
+    if(previewWeight) {
+        previewWeight.style.display = 'none';
+    }
 });
 
 simContainer.addEventListener('click', function(event)
@@ -63,6 +90,10 @@ function updateNextWeight(){
 
     nextWeight = randomNumGenerator();
     nextWeightLabel.textContent = nextWeight + 'kg';
+
+        if(previewWeight) {
+        previewWeight.textContent = nextWeight + 'kg';
+    }
 
 }
 
