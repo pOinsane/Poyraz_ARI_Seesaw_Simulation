@@ -59,21 +59,22 @@ body {
        
 }
 
-/*.sphere{
+.weight {
     position: absolute;
-    width: 30px;
-    height: 30px;
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
-    background-color: rgb(117, 158, 192);
-
+    background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%);
     display: flex;
     align-items: center;
     justify-content: center;
     color: white;
+    font-weight: 600;
     font-size: 12px;
-    user-select: none;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
+    pointer-events: none;
+    transform: translate(-50%, -50%);
 }
-*/
 
 #sim_container {
     position: relative;
