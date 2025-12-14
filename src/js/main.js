@@ -1,6 +1,8 @@
 const simContainer = document.getElementById("sim_container");
 const seesaw = document.getElementById("seesaw");
 const nextWeightLabel = document.getElementById("nextVal");
+const resetButton = document.getElementById('reset');
+const logPanel = document.getElementById('log-panel');
 
 let nextWeight = 0;
 let weights = [];
@@ -64,6 +66,26 @@ function updateNextWeight(){
 
 }
 
+function getRandomColor() {
+  var letters = '0123456789ABCDEF';
+  var color = '#';
+  for (var i = 0; i < 6; i++) {
+    color += letters[Math.floor(Math.random() * 16)];
+  }
+  return color;
+}
+
+function rotateSeesaw(){
+    const netTorque = totalTorqueLeft + totalTorqueRight;
+    const angle = Math.max(-30, Math.min(30, netTorque / 100));
+
+    seesaw.style.transition = 'transform 0.8s ease-out';
+    seesaw.style.transform = `rotate(${angle}deg)`;
+
+    document.getElementById('angle').textContent = angle.toFixed(1) * -1 + '°';
+
+}
+
 function createWeight(clickX){
    
     const weight = document.createElement('div');
@@ -73,10 +95,15 @@ function createWeight(clickX){
     const distanceFromCenter = clickX - center;
     
     weight.style.left = (200 + distanceFromCenter) + 'px';
-    weight.style.top = '10px';
+    weight.style.top = '-200px';
     weight.style.background = getRandomColor();
 
     seesaw.appendChild(weight);
+
+    setTimeout(() => {
+        weight.style.transition = 'top 0.3s ease-in';
+        weight.style.top = '10px';
+    }, 10);
 
     const torque = nextWeight * distanceFromCenter;
 
@@ -84,20 +111,56 @@ function createWeight(clickX){
     {
         totalTorqueLeft += torque;
         totalWeightLeft += nextWeight;
+        addLog(`${nextWeight}kg dropped on left side at ${Math.abs(distanceFromCenter).toFixed(0)}px from center`);
     } else {
         totalTorqueRight += torque;
         totalWeightRight += nextWeight;
+        addLog(`${nextWeight}kg dropped on right side at ${distanceFromCenter.toFixed(0)}px from center`);
     }
+    
+    document.getElementById('leftVal').textContent = totalWeightLeft.toFixed(1) + ' kg';
+    document.getElementById('rightVal').textContent = totalWeightRight.toFixed(1) + ' kg';
+
+    setTimeout(() => {
+        rotateSeesaw();
+    }, 350);
     
 }
 
-function getRandomColor() {
-  var letters = '0123456789ABCDEF';
-  var color = '#';
-  for (var i = 0; i < 6; i++) {
-    color += letters[Math.floor(Math.random() * 16)];
-  }
-  return color;
+function addLog(message) {
+    const logEntry = document.createElement('div');
+    logEntry.className = 'logs';
+    logEntry.textContent = message;
+
+    logPanel.insertBefore(logEntry, logPanel.firstChild);
+    
+    const allLogs = logPanel.querySelectorAll('.logs');
+    if(allLogs.length > 6
+    ) {
+        allLogs[allLogs.length - 1].remove();
+    }
 }
+
+function resetSimulation(){
+
+    totalTorqueLeft = 0;
+    totalTorqueRight = 0;
+    totalWeightLeft = 0;
+    totalWeightRight = 0;
+
+    seesaw.querySelectorAll('.weight').forEach(weight => weight.remove());
+    seesaw.style.transform = 'rotate(0deg)';
+
+    document.getElementById('leftVal').textContent = '0.0 kg';
+    document.getElementById('rightVal').textContent = '0.0 kg';
+    document.getElementById('angle').textContent = '0°';
+
+    logPanel.innerHTML = '';
+
+    updateNextWeight();
+
+}
+
+resetButton.addEventListener('click', resetSimulation);
 
 updateNextWeight();
