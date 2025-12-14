@@ -1,5 +1,10 @@
 const simContainer = document.getElementById("sim_container");
 const seesaw = document.getElementById("seesaw");
+const nextWeightLabel = document.getElementById("nextVal");
+
+let nextWeight = 0;
+let weights = [];
+
 
 //Simulation Container toplamda 700 pixel, seesaw ise 400 pixel
 //Simulation Containerın merkezi, seesaw'un da merkezi olduğu için tam olarak 350 pixel sağa gidildiğinde seesaw'un merkezine gelmiş oluruz
@@ -11,13 +16,12 @@ const seesaw = document.getElementById("seesaw");
     const containerPos = simContainer.getBoundingClientRect();
     const center = simContainer.offsetWidth/2;
     const seesawHalfWidth = 200;
-
     const clickableAreaLeftBound = center - seesawHalfWidth;  
     const clickableAreaRightBound = center + seesawHalfWidth;
 
 simContainer.addEventListener('mousemove', function(event){
 
-    const mouseX = event.clientX - containerPos.left;
+        const mouseX = event.clientX - containerPos.left;
 
     if(mouseX >= clickableAreaLeftBound && mouseX <= clickableAreaRightBound)
     {
@@ -40,3 +44,18 @@ simContainer.addEventListener('click', function(event)
 
 });
 
+function randomNumGenerator(){
+
+    let num = Math.floor(Math.random() * 10) + 1;
+
+    return(num);
+}
+
+function updateNextWeight(){
+
+    nextWeight = randomNumGenerator();
+    nextWeightLabel.textContent = nextWeight + 'kg';
+
+}
+
+updateNextWeight();
