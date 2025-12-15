@@ -40,7 +40,7 @@ Also, for efficiency purposes, I didn't store the properties of the weights that
 
  So basically, I can say that AI was pretty helpful since it is useful in terms of saving the developer from spending so much time on something which is repetitive or tedious. 
 
-
+You can check out the demo from this link : https://poinsane.github.io/Poyraz_ARI_Seesaw_Simulation
 
 Poyraz ARI
 
