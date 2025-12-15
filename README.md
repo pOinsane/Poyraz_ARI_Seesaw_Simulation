@@ -1,5 +1,4 @@
 <a id="readme-top"></a>
-<!--
 
 <h3 align="center">Seesaw Simulation</h3>
 
